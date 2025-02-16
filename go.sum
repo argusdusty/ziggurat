@@ -1,0 +1,4 @@
+github.com/vpxyz/xorshift v1.2.2 h1:5SyC9lrR0ZvOPjar7sP8Xes3KlrODPfp5p0iilKpKhY=
+github.com/vpxyz/xorshift v1.2.2/go.mod h1:GO+SQPfso/+ABPOLs/X3VNbrNDoO3ltpaU1xVcbwul4=
+gonum.org/v1/gonum v0.16.0 h1:5+ul4Swaf3ESvrOnidPp4GZbzf0mxVQpDCYUQE7OJfk=
+gonum.org/v1/gonum v0.16.0/go.mod h1:fef3am4MQ93R2HHpKnLk4/Tbh/s0+wqD5nfa6Pnwy4E=
