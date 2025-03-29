@@ -45,7 +45,7 @@ Note that [gonum 1.16.0](https://github.com/gonum/gonum/releases/tag/v0.16.0) is
 ### Benchmarks
 
 ```text
-gofft>go test -bench=FFT$ -cpu=1 -benchtime=5s
+gofft>go test -bench=. -cpu=1 -benchtime=5s
 goos: windows
 goarch: amd64
 pkg: github.com/argusdusty/gofft
