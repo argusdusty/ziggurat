@@ -4,7 +4,7 @@
 
 ## What
 
-The goal of random number generation is to sample from the area under the probability distribution curve. [The Ziggurat Algorithm](https://en.wikipedia.org/wiki/Ziggurat_algorithm) does this by covering the probability distribution up into equal areas with a large number of rectangles, which just barely exceed the area of the probability distribution, then samples from a random point in a randomly selected rectangle. There is a very small chance that the sampled point lies outside the probability distribution, in which case we simply retry (with the same rectangle). With enough rectangles, you can construct them such that the probability of landing outside the probability distribution is extremely small, and in the vast majority of cases, sampling a random point from the distribution is equivalent to picking a random point in rectangle.
+The goal of random number generation is to sample from the area under the probability distribution curve. The Ziggurat algorithm does this by covering the probability distribution up into equal areas with a large number of rectangles, which just barely exceed the area of the probability distribution, then samples from a random point in a randomly selected rectangle. There is a very small chance that the sampled point lies outside the probability distribution, in which case we simply retry (with the same rectangle). With enough rectangles, you can construct them such that the probability of landing outside the probability distribution is extremely small, and in the vast majority of cases, sampling a random point from the distribution is equivalent to picking a random point in rectangle.
 
 This code enables the automated construction of these extremely fast random number generators for [unimodal](https://en.wikipedia.org/wiki/Unimodality), [univariate](https://en.wikipedia.org/wiki/Univariate_distribution) probability distributions. This code is closely integrated with [gonum](https://www.gonum.org/), so you can supply most gonum distributions as input and get your fast(er) random number generator as output. You can also write your own distributions as long as they fulfill the [ziggurat.Distribution](distribution.go) interface.
 
@@ -25,18 +25,18 @@ package main
 
 import (
 	"github.com/argusdusty/ziggurat"
-    "github.com/vpxyz/xorshift/xorshift64star"
+	"github.com/vpxyz/xorshift/xorshift64star"
 	"gonum.org/v1/gonum/stat/distuv"
 )
 
 func main() {
-    src := xorshift64star.NewSource(1)
-    distribution := distuv.UnitNormal // Swap this for most gonum univariate distributions
+	src := xorshift64star.NewSource(1)
+	distribution := distuv.UnitNormal // Swap this for most gonum univariate distributions
 	rng := ziggurat.ToZiggurat(distribution, src)
-    randomNormalValue := rng.Rand()
+	randomNormalValue := rng.Rand()
 
-    // Or, alternatively
-    randomNormalValue := ziggurat.OptimizedUnitNormalRand(src)
+	// Or, alternatively
+	randomNormalValue := ziggurat.OptimizedUnitNormalRand(src)
 }
 ```
 
