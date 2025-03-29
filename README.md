@@ -1,4 +1,4 @@
-# ziggurat [![GoDoc][godoc-badge]][godoc] [![Build Status][travis-ci-badge]][travis-ci] [![Report Card][report-card-badge]][report-card]
+# ziggurat [![GoDoc][godoc-badge]][godoc] [![Build status][build-status-badge]][build-status] [![Report Card][report-card-badge]][report-card]
 
 [The Ziggurat Algorithm](https://en.wikipedia.org/wiki/Ziggurat_algorithm) is an extremely fast algorithm for the random sampling from **arbitrary** probability distributions. Just pass your distribution as input, and get a random number generator as output.
 
@@ -73,9 +73,9 @@ cpu: AMD Ryzen 9 5900X 12-Core Processor
 
 Note that symmetrical distributions (like the unit normal and Student's t) are not well optimized yet, so they run ~11-12ns/op instead of the usual ~3-4. Some planned optimizations should bring them down to ~5-7ns/op.
 
-[travis-ci-badge]:   https://api.travis-ci.org/argusdusty/ziggurat.svg?branch=master
-[travis-ci]:         https://api.travis-ci.org/argusdusty/ziggurat
 [godoc-badge]:       https://godoc.org/github.com/argusdusty/ziggurat?status.svg
 [godoc]:             https://godoc.org/github.com/argusdusty/ziggurat
+[build-status-badge]: https://github.com/argusdusty/ziggurat/workflows/CI/badge.svg
+[build-status]: https://github.com/argusdusty/ziggurat/actions
 [report-card-badge]: https://goreportcard.com/badge/github.com/argusdusty/ziggurat
 [report-card]:       https://goreportcard.com/report/github.com/argusdusty/ziggurat
