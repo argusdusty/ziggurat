@@ -75,7 +75,7 @@ Note that symmetrical distributions (like the unit normal and Student's t) are n
 
 [godoc-badge]:       https://godoc.org/github.com/argusdusty/ziggurat?status.svg
 [godoc]:             https://godoc.org/github.com/argusdusty/ziggurat
-[build-status-badge]: https://github.com/argusdusty/ziggurat/workflows/CI/badge.svg
+[build-status-badge]: https://github.com/argusdusty/ziggurat/actions/workflows/go.yml/badge.svg
 [build-status]: https://github.com/argusdusty/ziggurat/actions
 [report-card-badge]: https://goreportcard.com/badge/github.com/argusdusty/ziggurat
 [report-card]:       https://goreportcard.com/report/github.com/argusdusty/ziggurat
