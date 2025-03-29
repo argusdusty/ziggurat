@@ -52,7 +52,7 @@ pkg: github.com/argusdusty/gofft
 cpu: AMD Ryzen 9 5900X 12-Core Processor
 ```
 
-| Distribution | Algorithm            | Iterations | Time        |
+| Distribution | Library              | Iterations | Time        |
 |:-------------|:---------------------|:-----------|:------------|
 | Gamma        | Ziggurat             | 1000000000 | 3.854 ns/op |
 | Gamma        | Gonum                | 542656018  | 11.01 ns/op |
