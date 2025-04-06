@@ -16,7 +16,7 @@ For fastest results, I recommend using [xorshift](https://github.com/vpxyz/xorsh
 
 Fast random number generation is very important for large-scale Monte Carlo simulations, commonly used in scientific computing and statistics. Random number generation is often the bottleneck in these simulations, and I needed this code to run my own simulations at as large a scale as possible.
 
-For the normal distribution and exponentiatial distribution, the [Go standard library](https://pkg.go.dev/math/rand/v2) already uses pre-built hand-optimized Ziggurat algorithms to generate fast random numbers, so this library will not outperform them; however this library enables the creation of similarly-performing algorithms for arbitrary probability distributions (e.g. Triange, Gamma, and Students' T distributions), and is much faster than existing libraries in those cases.
+For the normal distribution and exponentiatial distribution, the [Go standard library](https://pkg.go.dev/math/rand/v2) already uses pre-built hand-optimized Ziggurat algorithms to generate fast random numbers, so this library will not outperform them; however this library enables the creation of similarly-performing algorithms for arbitrary probability distributions (e.g. Triangle, Gamma, and Students' T distributions), and is much faster than existing libraries in those cases.
 
 ## How
 
