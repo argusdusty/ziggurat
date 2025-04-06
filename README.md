@@ -72,8 +72,6 @@ cpu: AMD Ryzen 9 5900X 12-Core Processor
 | Triangle     | Gonum                | 363778390  | 16.51 ns/op |
 | Triangle     | Gonum (Fast RNG)     | 426160819  | 13.96 ns/op |
 
-Note that symmetrical distributions (like the unit normal and Student's t) are not well optimized yet, so they run ~11-12ns/op instead of the usual ~3-4. Some planned optimizations should bring them down to ~5-7ns/op.
-
 [godoc-badge]:       https://godoc.org/github.com/argusdusty/ziggurat?status.svg
 [godoc]:             https://godoc.org/github.com/argusdusty/ziggurat
 [build-status-badge]: https://github.com/argusdusty/ziggurat/actions/workflows/go.yml/badge.svg
