@@ -34,9 +34,6 @@ func main() {
 	distribution := distuv.UnitNormal // Swap this for most gonum univariate distributions
 	rng := ziggurat.ToSymmetricZiggurat(distribution, src) // The normal distribution is symmetric, so we can use the more efficient symmetric ziggurat
 	randomNormalValue := rng.Rand()
-
-	// Or, alternatively
-	randomNormalValue := ziggurat.OptimizedUnitNormalRand(src)
 }
 ```
 
