@@ -15,8 +15,12 @@ const (
 	STUDENTST_SAMPLES = 10_000
 )
 
+var (
+	STUDENTST_DOFS = []float64{0.01, 0.1, 0.5, 1.0, 2.0, 5.0, 10.0, 100.0}
+)
+
 func TestStudentsT(t *testing.T) {
-	for _, dof := range []float64{0.5, 1.0, 2.0, 5.0, 10.0, 100.0} {
+	for _, dof := range STUDENTST_DOFS {
 		dist := distuv.StudentsT{Mu: 0.0, Sigma: 1.0, Nu: dof}
 		T := ziggurat.ToZiggurat(dist, xorshift64star.NewSource(1))
 
@@ -37,7 +41,7 @@ func TestStudentsT(t *testing.T) {
 }
 
 func TestStudentsTSymmetric(t *testing.T) {
-	for _, dof := range []float64{0.5, 1.0, 2.0, 5.0, 10.0, 100.0} {
+	for _, dof := range STUDENTST_DOFS {
 		dist := distuv.StudentsT{Mu: 0.0, Sigma: 1.0, Nu: dof}
 		T := ziggurat.ToSymmetricZiggurat(dist, xorshift64star.NewSource(1))
 
@@ -58,35 +62,51 @@ func TestStudentsTSymmetric(t *testing.T) {
 }
 
 func BenchmarkStudentsTZiggurat(b *testing.B) {
-	dist := distuv.StudentsT{Mu: 0.0, Sigma: 1.0, Nu: 5.0}
-	T := ziggurat.ToZiggurat(dist, xorshift64star.NewSource(1))
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		T.Rand()
+	for _, dof := range STUDENTST_DOFS {
+		b.Run(fmt.Sprintf("dof=%v", dof), func(b *testing.B) {
+			dist := distuv.StudentsT{Mu: 0.0, Sigma: 1.0, Nu: dof}
+			T := ziggurat.ToZiggurat(dist, xorshift64star.NewSource(1))
+			b.ResetTimer()
+			for i := 0; i < b.N; i++ {
+				T.Rand()
+			}
+		})
 	}
 }
 
 func BenchmarkStudentsTSymmetricZiggurat(b *testing.B) {
-	dist := distuv.StudentsT{Mu: 0.0, Sigma: 1.0, Nu: 5.0}
-	T := ziggurat.ToSymmetricZiggurat(dist, xorshift64star.NewSource(1))
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		T.Rand()
+	for _, dof := range STUDENTST_DOFS {
+		b.Run(fmt.Sprintf("dof=%v", dof), func(b *testing.B) {
+			dist := distuv.StudentsT{Mu: 0.0, Sigma: 1.0, Nu: dof}
+			T := ziggurat.ToSymmetricZiggurat(dist, xorshift64star.NewSource(1))
+			b.ResetTimer()
+			for i := 0; i < b.N; i++ {
+				T.Rand()
+			}
+		})
 	}
 }
 
 func BenchmarkStudentsTGonum(b *testing.B) {
-	T := distuv.StudentsT{Mu: 0.0, Sigma: 1.0, Nu: 5.0}
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		T.Rand()
+	for _, dof := range STUDENTST_DOFS {
+		b.Run(fmt.Sprintf("dof=%v", dof), func(b *testing.B) {
+			T := distuv.StudentsT{Mu: 0.0, Sigma: 1.0, Nu: dof}
+			b.ResetTimer()
+			for i := 0; i < b.N; i++ {
+				T.Rand()
+			}
+		})
 	}
 }
 
 func BenchmarkStudentsTGonumFastRNG(b *testing.B) {
-	T := distuv.StudentsT{Mu: 0.0, Sigma: 1.0, Nu: 5.0, Src: xorshift64star.NewSource(1)}
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		T.Rand()
+	for _, dof := range STUDENTST_DOFS {
+		b.Run(fmt.Sprintf("dof=%v", dof), func(b *testing.B) {
+			T := distuv.StudentsT{Mu: 0.0, Sigma: 1.0, Nu: dof, Src: xorshift64star.NewSource(1)}
+			b.ResetTimer()
+			for i := 0; i < b.N; i++ {
+				T.Rand()
+			}
+		})
 	}
 }

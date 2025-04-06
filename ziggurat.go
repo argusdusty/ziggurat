@@ -158,7 +158,7 @@ func (z *symmetricZiggurat) Rand() float64 {
 		if rand.New(z.r.src).Float64() < (z.r.d.Prob(x)-stripBottom)/(stripTop-stripBottom) {
 			return x + z.r.offset
 		}
-		x = rand.New(z.r.src).Float64()
+		x = float64(int64(z.r.src.Uint64())>>10) / (1 << 53)
 	}
 }
 

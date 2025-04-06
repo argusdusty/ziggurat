@@ -52,25 +52,25 @@ pkg: github.com/argusdusty/gofft
 cpu: AMD Ryzen 9 5900X 12-Core Processor
 ```
 
-| Distribution | Library              | Iterations | Time        |
-|:-------------|:---------------------|:-----------|:------------|
-| Gamma        | Ziggurat             | 1000000000 | 3.826 ns/op |
-| Gamma        | Gonum                | 539979691  | 11.04 ns/op |
-| Gamma        | Gonum (Fast RNG)     | 763579789  | 7.826 ns/op |
-| HalfNormal   | Ziggurat             | 1000000000 | 3.730 ns/op |
-| Normal       | Ziggurat             | 553385515  | 10.66 ns/op |
-| Normal       | Ziggurat (Symmetric) | 1000000000 | 3.640 ns/op |
-| Normal       | Stdlib               | 764085924  | 8.043 ns/op |
-| Normal       | Stdlib (Fast RNG)    | 1000000000 | 3.229 ns/op |
-| Normal       | Gonum                | 639989281  | 9.293 ns/op |
-| Normal       | Gonum (Fast RNG)     | 1000000000 | 4.409 ns/op |
-| StudentsT    | Ziggurat             | 507803457  | 11.81 ns/op |
-| StudentsT    | Ziggurat (Symmetric) | 1000000000 | 5.019 ns/op |
-| StudentsT    | Gonum                | 155922039  | 38.70 ns/op |
-| StudentsT    | Gonum (Fast RNG)     | 193922726  | 30.75 ns/op |
-| Triangle     | Ziggurat             | 1000000000 | 3.641 ns/op |
-| Triangle     | Gonum                | 363778390  | 16.51 ns/op |
-| Triangle     | Gonum (Fast RNG)     | 426160819  | 13.96 ns/op |
+| Distribution        | Library              | Iterations | Time        |
+|:--------------------|:---------------------|:-----------|:------------|
+| Gamma               | Ziggurat             | 1000000000 | 3.826 ns/op |
+| Gamma               | Gonum                | 539979691  | 11.04 ns/op |
+| Gamma               | Gonum (Fast RNG)     | 763579789  | 7.826 ns/op |
+| Half-Normal         | Ziggurat             | 1000000000 | 3.730 ns/op |
+| Normal              | Ziggurat             | 553385515  | 10.66 ns/op |
+| Normal              | Ziggurat (Symmetric) | 1000000000 | 3.640 ns/op |
+| Normal              | Stdlib               | 764085924  | 8.043 ns/op |
+| Normal              | Stdlib (Fast RNG)    | 1000000000 | 3.229 ns/op |
+| Normal              | Gonum                | 639989281  | 9.293 ns/op |
+| Normal              | Gonum (Fast RNG)     | 1000000000 | 4.409 ns/op |
+| Student's t (dof=5) | Ziggurat             | 496152338  | 11.68 ns/op |
+| Student's t (dof=5) | Ziggurat (Symmetric) | 1000000000 | 4.757 ns/op |
+| Student's t (dof=5) | Gonum                | 154638505  | 38.84 ns/op |
+| Student's t (dof=5) | Gonum (Fast RNG)     | 191511306  | 30.89 ns/op |
+| Triangle            | Ziggurat             | 1000000000 | 3.641 ns/op |
+| Triangle            | Gonum                | 363778390  | 16.51 ns/op |
+| Triangle            | Gonum (Fast RNG)     | 426160819  | 13.96 ns/op |
 
 [godoc-badge]:       https://godoc.org/github.com/argusdusty/ziggurat?status.svg
 [godoc]:             https://godoc.org/github.com/argusdusty/ziggurat
