@@ -16,6 +16,7 @@ const (
 )
 
 var (
+	// Student's t with dof < ~0.3 may be broken in the same way as Gamma, but other than running really slow, it seems to be working correctly.
 	STUDENTST_DOFS = []float64{0.01, 0.1, 0.5, 1.0, 2.0, 5.0, 10.0, 100.0}
 )
 
