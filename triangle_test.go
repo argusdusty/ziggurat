@@ -46,7 +46,7 @@ func BenchmarkTriangleZiggurat(b *testing.B) {
 }
 
 func BenchmarkTriangleGonum(b *testing.B) {
-	T := distuv.NewTriangle(0.0, 1.0, 0.0, nil)
+	T := distuv.NewTriangle(0, 1, 0, nil)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		T.Rand()
@@ -54,7 +54,7 @@ func BenchmarkTriangleGonum(b *testing.B) {
 }
 
 func BenchmarkTriangleGonumFastRNG(b *testing.B) {
-	T := distuv.NewTriangle(0.0, 1.0, 0.0, xorshift64star.NewSource(1))
+	T := distuv.NewTriangle(0, 1, 0, xorshift64star.NewSource(1))
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		T.Rand()

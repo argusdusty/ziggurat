@@ -32,7 +32,7 @@ import (
 func main() {
 	src := xorshift64star.NewSource(1)
 	distribution := distuv.UnitNormal // Swap this for most gonum univariate distributions
-	rng := ziggurat.ToZiggurat(distribution, src)
+	rng := ziggurat.ToSymmetricZiggurat(distribution, src) // The normal distribution is symmetric, so we can use the more efficient symmetric ziggurat
 	randomNormalValue := rng.Rand()
 
 	// Or, alternatively
@@ -54,22 +54,23 @@ cpu: AMD Ryzen 9 5900X 12-Core Processor
 
 | Distribution | Library              | Iterations | Time        |
 |:-------------|:---------------------|:-----------|:------------|
-| Gamma        | Ziggurat             | 1000000000 | 3.854 ns/op |
-| Gamma        | Gonum                | 542656018  | 11.01 ns/op |
-| Gamma        | Gonum (Fast RNG)     | 687062262  | 7.914 ns/op |
-| HalfNormal   | Ziggurat             | 1000000000 | 3.489 ns/op |
-| Normal       | Ziggurat             | 556962763  | 10.80 ns/op |
-| Normal       | Ziggurat (Optimized) | 1000000000 | 5.848 ns/op |
-| Normal       | Stdlib               | 789706023  | 7.742 ns/op |
-| Normal       | Stdlib (Fast RNG)    | 1000000000 | 2.804 ns/op |
-| Normal       | Gonum                | 1000000000 | 9.284 ns/op |
-| Normal       | Gonum (Fast RNG)     | 1000000000 | 4.357 ns/op |
-| StudentsT    | Ziggurat             | 506489181  | 11.91 ns/op |
-| StudentsT    | Gonum                | 157042968  | 38.36 ns/op |
-| StudentsT    | Gonum (Fast RNG)     | 190763485  | 31.43 ns/op |
-| Triangle     | Ziggurat             | 1000000000 | 3.415 ns/op |
-| Triangle     | Gonum                | 370720540  | 16.20 ns/op |
-| Triangle     | Gonum (Fast RNG)     | 425591497  | 14.11 ns/op |
+| Gamma        | Ziggurat             | 1000000000 | 3.826 ns/op |
+| Gamma        | Gonum                | 539979691  | 11.04 ns/op |
+| Gamma        | Gonum (Fast RNG)     | 763579789  | 7.826 ns/op |
+| HalfNormal   | Ziggurat             | 1000000000 | 3.730 ns/op |
+| Normal       | Ziggurat             | 553385515  | 10.66 ns/op |
+| Normal       | Ziggurat (Symmetric) | 1000000000 | 3.640 ns/op |
+| Normal       | Stdlib               | 764085924  | 8.043 ns/op |
+| Normal       | Stdlib (Fast RNG)    | 1000000000 | 3.229 ns/op |
+| Normal       | Gonum                | 639989281  | 9.293 ns/op |
+| Normal       | Gonum (Fast RNG)     | 1000000000 | 4.409 ns/op |
+| StudentsT    | Ziggurat             | 507803457  | 11.81 ns/op |
+| StudentsT    | Ziggurat (Symmetric) | 1000000000 | 5.019 ns/op |
+| StudentsT    | Gonum                | 155922039  | 38.70 ns/op |
+| StudentsT    | Gonum (Fast RNG)     | 193922726  | 30.75 ns/op |
+| Triangle     | Ziggurat             | 1000000000 | 3.641 ns/op |
+| Triangle     | Gonum                | 363778390  | 16.51 ns/op |
+| Triangle     | Gonum (Fast RNG)     | 426160819  | 13.96 ns/op |
 
 Note that symmetrical distributions (like the unit normal and Student's t) are not well optimized yet, so they run ~11-12ns/op instead of the usual ~3-4. Some planned optimizations should bring them down to ~5-7ns/op.
 
