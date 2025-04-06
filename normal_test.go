@@ -1,7 +1,6 @@
 package ziggurat_test
 
 import (
-	"math"
 	"math/rand/v2"
 	"testing"
 
@@ -15,50 +14,17 @@ const (
 	NORMAL_SAMPLES = 100_000
 )
 
-func TestNormal(t *testing.T) {
-	dist := distuv.UnitNormal
-	N := ziggurat.ToZiggurat(dist, xorshift64star.NewSource(1))
-
-	var samples [NORMAL_SAMPLES]float64
-	for i := range NORMAL_SAMPLES {
-		samples[i] = N.Rand()
+func normalMoment(m uint64) float64 {
+	if m == 0 {
+		return 1.0
+	} else if m == 1 {
+		return 0.0
 	}
-
-	var moment func(m uint64) float64
-	moment = func(m uint64) float64 {
-		if m == 0 {
-			return 1.0
-		} else if m == 1 {
-			return 0.0
-		}
-		return float64(m-1) * moment(m-2)
-	}
-
-	testMoments(t, "Normal", samples[:], moment, 4, NORMAL_ALPHA)
-	testAndersonDarling(t, "Normal", samples[:], func(x float64) float64 { return math.Log(dist.CDF(x)) }, func(x float64) float64 { return math.Log1p(-dist.CDF(x)) }, NORMAL_ALPHA)
+	return float64(m-1) * normalMoment(m-2)
 }
 
-func TestNormalSymmetric(t *testing.T) {
-	dist := distuv.UnitNormal
-	N := ziggurat.ToSymmetricZiggurat(dist, xorshift64star.NewSource(1))
-
-	var samples [NORMAL_SAMPLES]float64
-	for i := range NORMAL_SAMPLES {
-		samples[i] = N.Rand()
-	}
-
-	var moment func(m uint64) float64
-	moment = func(m uint64) float64 {
-		if m == 0 {
-			return 1.0
-		} else if m == 1 {
-			return 0.0
-		}
-		return float64(m-1) * moment(m-2)
-	}
-
-	testMoments(t, "Normal (Symmetric)", samples[:], moment, 4, NORMAL_ALPHA)
-	testAndersonDarling(t, "Normal (Symmetric)", samples[:], func(x float64) float64 { return math.Log(dist.CDF(x)) }, func(x float64) float64 { return math.Log1p(-dist.CDF(x)) }, NORMAL_ALPHA)
+func TestNormal(t *testing.T) {
+	testSymmetricDistribution(t, distuv.UnitNormal, normalMoment, 4, NORMAL_SAMPLES, NORMAL_ALPHA)
 }
 
 func BenchmarkNormalZiggurat(b *testing.B) {

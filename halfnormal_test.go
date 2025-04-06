@@ -31,6 +31,15 @@ func (U UnitHalfNormal) Quantile(p float64) float64 {
 	return math.Sqrt2 * math.Erfinv(p)
 }
 
+func halfNormalMoment(m uint64) float64 {
+	if m == 0 {
+		return 1.0
+	} else if m == 1 {
+		return math.Sqrt2 / math.SqrtPi
+	}
+	return float64(m-1) * halfNormalMoment(m-2)
+}
+
 type NegUnitHalfNormal struct{}
 
 func (U NegUnitHalfNormal) Mode() float64 {
@@ -49,48 +58,19 @@ func (U NegUnitHalfNormal) Quantile(p float64) float64 {
 	return -math.Sqrt2 * math.Erfinv(1-p)
 }
 
+func negHalfNormalMoment(m uint64) float64 {
+	if (m & 1) == 1 {
+		return -halfNormalMoment(m)
+	}
+	return halfNormalMoment(m)
+}
+
 func TestHalfNormal(t *testing.T) {
-	dist := UnitHalfNormal{}
-	N := ziggurat.ToZiggurat(dist, xorshift64star.NewSource(1))
-
-	var samples [HALF_NORMAL_SAMPLES]float64
-	for i := 0; i < HALF_NORMAL_SAMPLES; i++ {
-		samples[i] = N.Rand()
-	}
-
-	var moment func(m uint64) float64
-	moment = func(m uint64) float64 {
-		if m == 0 {
-			return 1.0
-		} else if m == 1 {
-			return math.Sqrt2 / math.SqrtPi
-		}
-		return float64(m-1) * moment(m-2)
-	}
-	testMoments(t, "Half-Normal", samples[:], moment, 4, HALF_NORMAL_ALPHA)
-	testAndersonDarling(t, "Half-Normal", samples[:], func(x float64) float64 { return math.Log(0.5 - dist.Survival(x)) }, func(x float64) float64 { return math.Log(0.5 + dist.Survival(x)) }, HALF_NORMAL_ALPHA)
+	testAsymmetricDistribution(t, UnitHalfNormal{}, halfNormalMoment, 4, HALF_NORMAL_SAMPLES, HALF_NORMAL_ALPHA)
 }
 
 func TestNegHalfNormal(t *testing.T) {
-	dist := NegUnitHalfNormal{}
-	N := ziggurat.ToZiggurat(dist, xorshift64star.NewSource(1))
-
-	var samples [HALF_NORMAL_SAMPLES]float64
-	for i := 0; i < HALF_NORMAL_SAMPLES; i++ {
-		samples[i] = N.Rand()
-	}
-
-	var moment func(m uint64) float64
-	moment = func(m uint64) float64 {
-		if m == 0 {
-			return 1.0
-		} else if m == 1 {
-			return -math.Sqrt2 / math.SqrtPi
-		}
-		return float64(m-1) * moment(m-2)
-	}
-	testMoments(t, "Negative Half-Normal", samples[:], moment, 4, HALF_NORMAL_ALPHA)
-	testAndersonDarling(t, "Negative Half-Normal", samples[:], func(x float64) float64 { return math.Log(0.5 - dist.Survival(x)) }, func(x float64) float64 { return math.Log(0.5 + dist.Survival(x)) }, HALF_NORMAL_ALPHA)
+	testAsymmetricDistribution(t, NegUnitHalfNormal{}, negHalfNormalMoment, 4, HALF_NORMAL_SAMPLES, HALF_NORMAL_ALPHA)
 }
 
 func BenchmarkHalfNormalZiggurat(b *testing.B) {

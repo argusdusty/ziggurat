@@ -40,6 +40,9 @@ type twoPartZiggurat struct {
 }
 
 func toZiggurat(distribution Distribution, src rand.Source) *ziggurat {
+	if src == nil {
+		src = globalRand{}
+	}
 	d := zeroModeDistribution{Distribution: distribution}
 	stripArea := func(x float64) float64 {
 		if math.IsInf(x, 1) {
@@ -66,6 +69,9 @@ func toZiggurat(distribution Distribution, src rand.Source) *ziggurat {
 }
 
 func ToZiggurat(distribution Distribution, src rand.Source) distuv.Rander {
+	if src == nil {
+		src = globalRand{}
+	}
 	if distribution.Survival(distribution.Mode()) == 0.0 {
 		return &flippedZiggurat{Rander: ToZiggurat(flippedDistribution{Distribution: distribution}, src), mode: distribution.Mode()}
 	}

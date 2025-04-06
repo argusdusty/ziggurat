@@ -2,9 +2,12 @@ package ziggurat_test
 
 import (
 	"math"
+	"math/rand/v2"
 	"sort"
 	"testing"
 
+	"github.com/argusdusty/ziggurat"
+	"github.com/vpxyz/xorshift/xorshift64star"
 	"gonum.org/v1/gonum/stat/distuv"
 )
 
@@ -39,7 +42,7 @@ func andersonDarlingPValue(A2, n float64) float64 {
 }
 
 // False positive rate 2*alpha.
-func testAndersonDarling(t *testing.T, name string, samples []float64, logCDF, logSF func(x float64) float64, alpha float64) {
+func testAndersonDarling(t *testing.T, samples []float64, logCDF, logSF func(x float64) float64, alpha float64) {
 	n := float64(len(samples))
 	A2 := float64(-n)
 	sort.Float64s(samples)
@@ -50,13 +53,13 @@ func testAndersonDarling(t *testing.T, name string, samples []float64, logCDF, l
 	}
 	pAD := andersonDarlingPValue(A2, n)
 	if pAD < alpha || pAD > (1-alpha) {
-		t.Errorf("%s distribution random variate with %d samples produced incorrect distribution with Anderson-Darling p-value of %v - A^2=%v", name, len(samples), pAD, A2)
+		t.Errorf("%s distribution random variate with %d samples produced incorrect distribution with Anderson-Darling p-value of %v - A^2=%v", t.Name(), len(samples), pAD, A2)
 	}
 }
 
 // False positive rate 4*alpha.
 // Requires E[X^M] < E[X^(2*M)], otherwise the central limit theorem doesn't apply and this test won't work.
-func testMoment(t *testing.T, name string, samples []float64, M uint64, EXM, EXM2, alpha float64) {
+func testMoment(t *testing.T, samples []float64, M uint64, EXM, EXM2, alpha float64) {
 	if EXM2 <= EXM*EXM {
 		t.Errorf("Invalid moments for use with testMoment: E[X^M]=%v, E[X^(2*M)]=%v", EXM, EXM2)
 	}
@@ -64,20 +67,62 @@ func testMoment(t *testing.T, name string, samples []float64, M uint64, EXM, EXM
 	var SM float64
 	for i := range samples {
 		if math.IsNaN(samples[i]) {
-			t.Fatalf("%s distribution random variate with %d samples produced NaN sample at index %d", name, len(samples), i)
+			t.Fatalf("%s distribution random variate with %d samples produced NaN sample at index %d", t.Name(), len(samples), i)
 		}
 		SM += math.Pow(samples[i], float64(M))
 	}
 	pEXM := distuv.Normal{Mu: EXM, Sigma: math.Sqrt((EXM2 - EXM*EXM) / N)}.CDF(SM / N)
 	if pEXM < alpha || pEXM > (1-alpha) || (pEXM > (0.5-alpha)) && (pEXM < (0.5+alpha)) {
-		t.Errorf("%s distribution random variate with %d samples produced incorrect E[X^%d] value: %v (expected %v with sigma %v) which has a p-value of %v", name, len(samples), M, SM/N, EXM, math.Sqrt((EXM2-EXM*EXM)/N), pEXM)
+		t.Errorf("%s distribution random variate with %d samples produced incorrect E[X^%d] value: %v (expected %v with sigma %v) which has a p-value of %v", t.Name(), len(samples), M, SM/N, EXM, math.Sqrt((EXM2-EXM*EXM)/N), pEXM)
 	}
 }
 
-func testMoments(t *testing.T, name string, samples []float64, momentFn func(m uint64) float64, end uint64, alpha float64) {
-	for m := uint64(1); m <= end; m++ {
+func testMoments(t *testing.T, samples []float64, momentFn func(m uint64) float64, maxMoment uint64, alpha float64) {
+	for m := uint64(1); m <= maxMoment; m++ {
 		EXM := momentFn(m)
 		EXM2 := momentFn(2 * m)
-		testMoment(t, name, samples, m, EXM, EXM2, alpha)
+		testMoment(t, samples, m, EXM, EXM2, alpha)
+	}
+}
+
+func testDistribution(t *testing.T, dist ziggurat.Distribution, momentFn func(m uint64) float64, maxMoment uint64, numSamples uint64, alpha float64, zigguratFn func(dist ziggurat.Distribution, src rand.Source) distuv.Rander, src rand.Source) {
+	Z := zigguratFn(dist, src)
+
+	var samples = make([]float64, numSamples)
+	for i := range numSamples {
+		samples[i] = Z.Rand()
+	}
+
+	testMoments(t, samples[:], momentFn, maxMoment, alpha)
+	testAndersonDarling(t, samples[:], func(x float64) float64 { return math.Log1p(-dist.Survival(x)) }, func(x float64) float64 { return math.Log(dist.Survival(x)) }, alpha)
+}
+
+func testDistributionAllRngs(t *testing.T, dist ziggurat.Distribution, momentFn func(m uint64) float64, maxMoment uint64, numSamples uint64, alpha float64, zigguratFn func(dist ziggurat.Distribution, src rand.Source) distuv.Rander) {
+	var rngs = []struct {
+		Name string
+		Src  rand.Source
+	}{{Name: "Fast", Src: xorshift64star.NewSource(1)}, {Name: "Default", Src: nil}}
+
+	for _, rng := range rngs {
+		t.Run("rng="+rng.Name, func(t *testing.T) {
+			testDistribution(t, dist, momentFn, maxMoment, numSamples, alpha, zigguratFn, rng.Src)
+		})
+	}
+}
+
+func testAsymmetricDistribution(t *testing.T, dist ziggurat.Distribution, momentFn func(m uint64) float64, maxMoment uint64, numSamples uint64, alpha float64) {
+	testDistributionAllRngs(t, dist, momentFn, maxMoment, numSamples, alpha, ziggurat.ToZiggurat)
+}
+
+func testSymmetricDistribution(t *testing.T, dist ziggurat.Distribution, momentFn func(m uint64) float64, maxMoment uint64, numSamples uint64, alpha float64) {
+	var zigguratFns = []struct {
+		Name string
+		Fn   func(ziggurat.Distribution, rand.Source) distuv.Rander
+	}{{Name: "Default", Fn: ziggurat.ToZiggurat}, {Name: "Symmetric", Fn: ziggurat.ToSymmetricZiggurat}}
+
+	for _, zigguratFn := range zigguratFns {
+		t.Run("construction="+zigguratFn.Name, func(t *testing.T) {
+			testDistributionAllRngs(t, dist, momentFn, maxMoment, numSamples, alpha, zigguratFn.Fn)
+		})
 	}
 }
