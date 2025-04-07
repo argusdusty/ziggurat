@@ -3,10 +3,9 @@ package ziggurat_test
 import (
 	"fmt"
 	"math"
+	"math/rand/v2"
 	"testing"
 
-	"github.com/argusdusty/ziggurat"
-	"github.com/vpxyz/xorshift/xorshift64star"
 	"gonum.org/v1/gonum/stat/distuv"
 )
 
@@ -28,27 +27,6 @@ func TestTriangle(t *testing.T) {
 	}
 }
 
-func BenchmarkTriangleZiggurat(b *testing.B) {
-	dist := distuv.NewTriangle(0, 1, 0, nil)
-	T := ziggurat.ToZiggurat(dist, xorshift64star.NewSource(1))
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		T.Rand()
-	}
-}
-
-func BenchmarkTriangleGonum(b *testing.B) {
-	T := distuv.NewTriangle(0, 1, 0, nil)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		T.Rand()
-	}
-}
-
-func BenchmarkTriangleGonumFastRNG(b *testing.B) {
-	T := distuv.NewTriangle(0, 1, 0, xorshift64star.NewSource(1))
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		T.Rand()
-	}
+func BenchmarkTriangle(b *testing.B) {
+	benchmarkAsymmetricDistribution(b, func(src rand.Source) DistRander { return distuv.NewTriangle(0, 1, 0, src) })
 }

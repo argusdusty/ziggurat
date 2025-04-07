@@ -98,12 +98,10 @@ func testDistribution(t *testing.T, dist ziggurat.Distribution, momentFn func(m 
 }
 
 func testDistributionAllRngs(t *testing.T, dist ziggurat.Distribution, momentFn func(m uint64) float64, maxMoment uint64, numSamples uint64, alpha float64, zigguratFn func(dist ziggurat.Distribution, src rand.Source) distuv.Rander) {
-	var rngs = []struct {
+	for _, rng := range []struct {
 		Name string
 		Src  rand.Source
-	}{{Name: "Fast", Src: xorshift64star.NewSource(1)}, {Name: "Default", Src: nil}}
-
-	for _, rng := range rngs {
+	}{{Name: "Default", Src: nil}, {Name: "Fast", Src: xorshift64star.NewSource(1)}} {
 		t.Run("rng="+rng.Name, func(t *testing.T) {
 			testDistribution(t, dist, momentFn, maxMoment, numSamples, alpha, zigguratFn, rng.Src)
 		})
@@ -123,6 +121,56 @@ func testSymmetricDistribution(t *testing.T, dist ziggurat.Distribution, momentF
 	for _, zigguratFn := range zigguratFns {
 		t.Run("construction="+zigguratFn.Name, func(t *testing.T) {
 			testDistributionAllRngs(t, dist, momentFn, maxMoment, numSamples, alpha, zigguratFn.Fn)
+		})
+	}
+}
+
+func benchmarkDistribution(b *testing.B, distribution distuv.Rander) {
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		distribution.Rand()
+	}
+}
+
+func benchmarkDistributionAllRngs(b *testing.B, distributionFn func(rand.Source) distuv.Rander) {
+	for _, rng := range []struct {
+		Name string
+		Src  rand.Source
+	}{{Name: "Default", Src: nil}, {Name: "Fast", Src: xorshift64star.NewSource(1)}} {
+		b.Run("rng="+rng.Name, func(b *testing.B) {
+			distribution := distributionFn(rng.Src)
+			benchmarkDistribution(b, distribution)
+		})
+	}
+}
+
+type DistRander interface {
+	ziggurat.Distribution
+	distuv.Rander
+}
+
+func benchmarkAsymmetricDistribution(b *testing.B, distributionFn func(src rand.Source) DistRander) {
+	var algorithms = []struct {
+		Name string
+		Fn   func(DistRander, rand.Source) distuv.Rander
+	}{{Name: "Ziggurat", Fn: func(dist DistRander, src rand.Source) distuv.Rander { return ziggurat.ToZiggurat(dist, src) }}, {Name: "Gonum", Fn: func(dist DistRander, src rand.Source) distuv.Rander { return dist }}}
+
+	for _, algorithm := range algorithms {
+		b.Run("algorithm="+algorithm.Name, func(b *testing.B) {
+			benchmarkDistributionAllRngs(b, func(src rand.Source) distuv.Rander { return algorithm.Fn(distributionFn(src), src) })
+		})
+	}
+}
+
+func benchmarkSymmetricDistribution(b *testing.B, distributionFn func(src rand.Source) DistRander) {
+	var algorithms = []struct {
+		Name string
+		Fn   func(DistRander, rand.Source) distuv.Rander
+	}{{Name: "Ziggurat", Fn: func(dist DistRander, src rand.Source) distuv.Rander { return ziggurat.ToZiggurat(dist, src) }}, {Name: "SymmetricZiggurat", Fn: func(dist DistRander, src rand.Source) distuv.Rander { return ziggurat.ToSymmetricZiggurat(dist, src) }}, {Name: "Gonum", Fn: func(dist DistRander, src rand.Source) distuv.Rander { return dist }}}
+
+	for _, algorithm := range algorithms {
+		b.Run("algorithm="+algorithm.Name, func(b *testing.B) {
+			benchmarkDistributionAllRngs(b, func(src rand.Source) distuv.Rander { return algorithm.Fn(distributionFn(src), src) })
 		})
 	}
 }

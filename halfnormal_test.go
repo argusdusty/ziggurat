@@ -2,10 +2,11 @@ package ziggurat_test
 
 import (
 	"math"
+	"math/rand/v2"
 	"testing"
 
 	"github.com/argusdusty/ziggurat"
-	"github.com/vpxyz/xorshift/xorshift64star"
+	"gonum.org/v1/gonum/stat/distuv"
 )
 
 const (
@@ -74,10 +75,5 @@ func TestNegHalfNormal(t *testing.T) {
 }
 
 func BenchmarkHalfNormalZiggurat(b *testing.B) {
-	dist := UnitHalfNormal{}
-	N := ziggurat.ToZiggurat(dist, xorshift64star.NewSource(1))
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		N.Rand()
-	}
+	benchmarkDistributionAllRngs(b, func(src rand.Source) distuv.Rander { return ziggurat.ToZiggurat(UnitHalfNormal{}, src) })
 }

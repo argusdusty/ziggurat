@@ -4,7 +4,6 @@ import (
 	"math/rand/v2"
 	"testing"
 
-	"github.com/argusdusty/ziggurat"
 	"github.com/vpxyz/xorshift/xorshift64star"
 	"gonum.org/v1/gonum/stat/distuv"
 )
@@ -27,52 +26,35 @@ func TestNormal(t *testing.T) {
 	testSymmetricDistribution(t, distuv.UnitNormal, normalMoment, 4, NORMAL_SAMPLES, NORMAL_ALPHA)
 }
 
-func BenchmarkNormalZiggurat(b *testing.B) {
-	dist := distuv.UnitNormal
-	N := ziggurat.ToZiggurat(dist, xorshift64star.NewSource(1))
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		N.Rand()
-	}
+type StdlibNormal struct {
+	rng *rand.Rand
 }
 
-func BenchmarkNormalSymmetricZiggurat(b *testing.B) {
-	dist := distuv.UnitNormal
-	N := ziggurat.ToSymmetricZiggurat(dist, xorshift64star.NewSource(1))
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		N.Rand()
+func (N StdlibNormal) Rand() float64 {
+	if N.rng == nil {
+		return rand.NormFloat64()
 	}
+	return N.rng.NormFloat64()
 }
 
-func BenchmarkNormalStdlib(b *testing.B) {
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		rand.NormFloat64()
-	}
-}
-
-func BenchmarkNormalStdlibFastRNG(b *testing.B) {
-	rng := rand.New(xorshift64star.NewSource(0))
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		rng.NormFloat64()
-	}
-}
-
-func BenchmarkNormalGonum(b *testing.B) {
-	N := distuv.UnitNormal
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		N.Rand()
-	}
-}
-
-func BenchmarkNormalGonumFastRNG(b *testing.B) {
-	N := distuv.UnitNormal
-	N.Src = xorshift64star.NewSource(0)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		N.Rand()
-	}
+func BenchmarkNormal(b *testing.B) {
+	benchmarkSymmetricDistribution(b, func(src rand.Source) DistRander {
+		N := distuv.UnitNormal
+		N.Src = src
+		return N
+	})
+	b.Run("algorithm=Stdlib", func(b *testing.B) {
+		b.Run("rng=Default", func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				rand.NormFloat64()
+			}
+		})
+		b.Run("rng=Fast", func(b *testing.B) {
+			rng := rand.New(xorshift64star.NewSource(1))
+			b.ResetTimer()
+			for i := 0; i < b.N; i++ {
+				rng.NormFloat64()
+			}
+		})
+	})
 }

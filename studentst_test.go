@@ -3,10 +3,9 @@ package ziggurat_test
 import (
 	"fmt"
 	"math"
+	"math/rand/v2"
 	"testing"
 
-	"github.com/argusdusty/ziggurat"
-	"github.com/vpxyz/xorshift/xorshift64star"
 	"gonum.org/v1/gonum/stat/distuv"
 )
 
@@ -20,7 +19,7 @@ var (
 	STUDENTST_DOFS = []float64{0.01, 0.1, 0.5, 1.0, 2.0, 5.0, 10.0, 100.0}
 )
 
-func TestStudentsTAlt(t *testing.T) {
+func TestStudentsT(t *testing.T) {
 	for _, dof := range STUDENTST_DOFS {
 		t.Run(fmt.Sprintf("dof=%v", dof), func(t *testing.T) {
 			momentFn := func(m float64) float64 {
@@ -35,52 +34,12 @@ func TestStudentsTAlt(t *testing.T) {
 	}
 }
 
-func BenchmarkStudentsTZiggurat(b *testing.B) {
+func BenchmarkStudentsT(b *testing.B) {
 	for _, dof := range STUDENTST_DOFS {
 		b.Run(fmt.Sprintf("dof=%v", dof), func(b *testing.B) {
-			dist := distuv.StudentsT{Mu: 0.0, Sigma: 1.0, Nu: dof}
-			T := ziggurat.ToZiggurat(dist, xorshift64star.NewSource(1))
-			b.ResetTimer()
-			for i := 0; i < b.N; i++ {
-				T.Rand()
-			}
-		})
-	}
-}
-
-func BenchmarkStudentsTSymmetricZiggurat(b *testing.B) {
-	for _, dof := range STUDENTST_DOFS {
-		b.Run(fmt.Sprintf("dof=%v", dof), func(b *testing.B) {
-			dist := distuv.StudentsT{Mu: 0.0, Sigma: 1.0, Nu: dof}
-			T := ziggurat.ToSymmetricZiggurat(dist, xorshift64star.NewSource(1))
-			b.ResetTimer()
-			for i := 0; i < b.N; i++ {
-				T.Rand()
-			}
-		})
-	}
-}
-
-func BenchmarkStudentsTGonum(b *testing.B) {
-	for _, dof := range STUDENTST_DOFS {
-		b.Run(fmt.Sprintf("dof=%v", dof), func(b *testing.B) {
-			T := distuv.StudentsT{Mu: 0.0, Sigma: 1.0, Nu: dof}
-			b.ResetTimer()
-			for i := 0; i < b.N; i++ {
-				T.Rand()
-			}
-		})
-	}
-}
-
-func BenchmarkStudentsTGonumFastRNG(b *testing.B) {
-	for _, dof := range STUDENTST_DOFS {
-		b.Run(fmt.Sprintf("dof=%v", dof), func(b *testing.B) {
-			T := distuv.StudentsT{Mu: 0.0, Sigma: 1.0, Nu: dof, Src: xorshift64star.NewSource(1)}
-			b.ResetTimer()
-			for i := 0; i < b.N; i++ {
-				T.Rand()
-			}
+			benchmarkSymmetricDistribution(b, func(src rand.Source) DistRander {
+				return distuv.StudentsT{Mu: 0.0, Sigma: 1.0, Nu: dof, Src: src}
+			})
 		})
 	}
 }

@@ -49,25 +49,30 @@ pkg: github.com/argusdusty/gofft
 cpu: AMD Ryzen 9 5900X 12-Core Processor
 ```
 
-| Distribution        | Library              | Iterations | Time        |
-|:--------------------|:---------------------|:-----------|:------------|
-| Gamma               | Ziggurat             | 1000000000 | 3.826 ns/op |
-| Gamma               | Gonum                | 539979691  | 11.04 ns/op |
-| Gamma               | Gonum (Fast RNG)     | 763579789  | 7.826 ns/op |
-| Half-Normal         | Ziggurat             | 1000000000 | 3.730 ns/op |
-| Normal              | Ziggurat             | 553385515  | 10.66 ns/op |
-| Normal              | Ziggurat (Symmetric) | 1000000000 | 3.640 ns/op |
-| Normal              | Stdlib               | 764085924  | 8.043 ns/op |
-| Normal              | Stdlib (Fast RNG)    | 1000000000 | 3.229 ns/op |
-| Normal              | Gonum                | 639989281  | 9.293 ns/op |
-| Normal              | Gonum (Fast RNG)     | 1000000000 | 4.409 ns/op |
-| Student's t (dof=5) | Ziggurat             | 496152338  | 11.68 ns/op |
-| Student's t (dof=5) | Ziggurat (Symmetric) | 1000000000 | 4.757 ns/op |
-| Student's t (dof=5) | Gonum                | 154638505  | 38.84 ns/op |
-| Student's t (dof=5) | Gonum (Fast RNG)     | 191511306  | 30.89 ns/op |
-| Triangle            | Ziggurat             | 1000000000 | 3.641 ns/op |
-| Triangle            | Gonum                | 363778390  | 16.51 ns/op |
-| Triangle            | Gonum (Fast RNG)     | 426160819  | 13.96 ns/op |
+| Distribution        | Algorithm            | RNG     | Iterations | Time        |
+|:--------------------|:---------------------|:--------|:-----------|:------------|
+| Gamma (alpha=1)     | Ziggurat             | Default | 686436024  | 8.583 ns/op |
+| Gamma (alpha=1)     | Ziggurat             | Fast    | 1000000000 | 3.638 ns/op |
+| Gamma (alpha=1)     | Gonum                | Default | 512718362  | 11.88 ns/op |
+| Gamma (alpha=1)     | Gonum                | Fast    | 722268586  | 8.259 ns/op |
+| Half-Normal         | Ziggurat             | Default | 740980780  | 8.208 ns/op |
+| Half-Normal         | Ziggurat             | Fast    | 1000000000 | 3.325 ns/op |
+| Normal              | Ziggurat             | Default | 290772226  | 20.09 ns/op |
+| Normal              | Ziggurat             | Fast    | 581838266  | 10.39 ns/op |
+| Normal              | Ziggurat (Symmetric) | Default | 696211483  | 8.665 ns/op |
+| Normal              | Ziggurat (Symmetric) | Fast    | 1000000000 | 3.927 ns/op |
+| Normal              | Gonum                | Default | 612776575  | 9.908 ns/op |
+| Normal              | Gonum                | Fast    | 946064395  | 6.381 ns/op |
+| Normal              | Stdlib               | Default | 798303338  | 7.573 ns/op |
+| Normal              | Stdlib               | Fast    | 1000000000 | 3.688 ns/op |
+| Student's t (dof=5) | Ziggurat             | Default | 272666368  | 22.60 ns/op |
+| Student's t (dof=5) | Ziggurat             | Fast    | 509183419  | 11.63 ns/op |
+| Student's t (dof=5) | Ziggurat (Symmetric) | Default | 622864159  | 9.705 ns/op |
+| Student's t (dof=5) | Ziggurat (Symmetric) | Fast    | 1000000000 | 5.162 ns/op |
+| Student's t (dof=5) | Gonum                | Default | 139996405  | 42.52 ns/op |
+| Student's t (dof=5) | Gonum                | Fast    | 166135466  | 36.09 ns/op |
+
+(Note: Fast RNG means xorshift64star)
 
 [godoc-badge]:       https://godoc.org/github.com/argusdusty/ziggurat?status.svg
 [godoc]:             https://godoc.org/github.com/argusdusty/ziggurat
