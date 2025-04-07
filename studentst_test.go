@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	STUDENTST_ALPHA   = 0.001
+	STUDENTST_ALPHA   = 0.0001
 	STUDENTST_SAMPLES = 10_000
 )
 
