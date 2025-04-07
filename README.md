@@ -8,8 +8,6 @@ The goal of random number generation is to sample from the area under the probab
 
 This code enables the automated construction of these extremely fast random number generators for [unimodal](https://en.wikipedia.org/wiki/Unimodality), [univariate](https://en.wikipedia.org/wiki/Univariate_distribution) probability distributions. This code is closely integrated with [gonum](https://www.gonum.org/), so you can supply most gonum distributions as input and get your fast(er) random number generator as output. You can also write your own distributions as long as they fulfill the [ziggurat.Distribution](distribution.go) interface.
 
-It also offers pre-built hand-optimized random number generators for some common probability distributions (so far, only the [Unit (Standard) Normal distribution](https://en.wikipedia.org/wiki/Normal_distribution#Standard_normal_distribution), but more are planned).
-
 For fastest results, I recommend using [xorshift](https://github.com/vpxyz/xorshift) as your random source.
 
 ## Why
