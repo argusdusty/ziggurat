@@ -82,7 +82,7 @@ func ToZiggurat(distribution Distribution, src rand.Source) distuv.Rander {
 }
 
 func ToSymmetricZiggurat(distribution Distribution, src rand.Source) distuv.Rander {
-	return &symmetricZiggurat{r: toZiggurat(truncatedBelowDistribution{Distribution: distribution}, src)}
+	return symmetricZiggurat{r: toZiggurat(truncatedBelowDistribution{Distribution: distribution}, src)}
 }
 
 func (z *ziggurat) Rand() float64 {
@@ -125,7 +125,7 @@ func (z *ziggurat) Rand() float64 {
 	}
 }
 
-func (z *symmetricZiggurat) Rand() float64 {
+func (z symmetricZiggurat) Rand() float64 {
 	r := z.r.src.Uint64()
 	index := r & (ZIGGURAT_N - 1)
 	x := float64(int64(r)>>10) / (1 << 53)
