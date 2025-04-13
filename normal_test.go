@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	NORMAL_ALPHA   = 0.001
+	NORMAL_ALPHA   = 0.0001
 	NORMAL_SAMPLES = 100_000
 )
 

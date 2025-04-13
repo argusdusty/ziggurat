@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	TRIANGLE_ALPHA   = 0.001
+	TRIANGLE_ALPHA   = 0.0001
 	TRIANGLE_SAMPLES = 100_000
 )
 

@@ -11,7 +11,7 @@ import (
 
 const (
 	STUDENTST_ALPHA   = 0.0001
-	STUDENTST_SAMPLES = 10_000
+	STUDENTST_SAMPLES = 100_000
 )
 
 var (

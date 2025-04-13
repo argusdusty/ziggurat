@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	GAMMA_ALPHA   = 0.001
+	GAMMA_ALPHA   = 0.0001
 	GAMMA_SAMPLES = 100_000
 )
 
