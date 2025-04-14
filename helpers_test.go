@@ -126,8 +126,7 @@ func testSymmetricDistribution(t *testing.T, dist ziggurat.Distribution, momentF
 }
 
 func benchmarkDistribution(b *testing.B, distribution distuv.Rander) {
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		distribution.Rand()
 	}
 }
