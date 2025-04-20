@@ -4,7 +4,7 @@ import (
 	"math/rand/v2"
 	"testing"
 
-	"github.com/vpxyz/xorshift/xorshift64star"
+	"github.com/vpxyz/xorshift/xoroshiro128plus"
 	"gonum.org/v1/gonum/stat/distuv"
 )
 
@@ -45,14 +45,13 @@ func BenchmarkNormal(b *testing.B) {
 	})
 	b.Run("algorithm=Stdlib", func(b *testing.B) {
 		b.Run("rng=Default", func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
+			for b.Loop() {
 				rand.NormFloat64()
 			}
 		})
-		b.Run("rng=Fast", func(b *testing.B) {
-			rng := rand.New(xorshift64star.NewSource(1))
-			b.ResetTimer()
-			for i := 0; i < b.N; i++ {
+		b.Run("rng=xoroshiro128+", func(b *testing.B) {
+			rng := rand.New(xoroshiro128plus.NewSource(rand.Int64()))
+			for b.Loop() {
 				rng.NormFloat64()
 			}
 		})

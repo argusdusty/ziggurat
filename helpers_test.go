@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/argusdusty/ziggurat"
-	"github.com/vpxyz/xorshift/xorshift64star"
+	"github.com/vpxyz/xorshift/xoroshiro128plus"
 	"gonum.org/v1/gonum/stat/distuv"
 )
 
@@ -101,7 +101,7 @@ func testDistributionAllRngs(t *testing.T, dist ziggurat.Distribution, momentFn 
 	for _, rng := range []struct {
 		Name string
 		Src  rand.Source
-	}{{Name: "Default", Src: nil}, {Name: "Fast", Src: xorshift64star.NewSource(1)}} {
+	}{{Name: "xoroshiro128+", Src: xoroshiro128plus.NewSource(1)}} {
 		t.Run("rng="+rng.Name, func(t *testing.T) {
 			testDistribution(t, dist, momentFn, maxMoment, numSamples, alpha, zigguratFn, rng.Src)
 		})
@@ -135,7 +135,7 @@ func benchmarkDistributionAllRngs(b *testing.B, distributionFn func(rand.Source)
 	for _, rng := range []struct {
 		Name string
 		Src  rand.Source
-	}{{Name: "Default", Src: nil}, {Name: "Fast", Src: xorshift64star.NewSource(1)}} {
+	}{{Name: "Default", Src: nil}, {Name: "xoroshiro128+", Src: xoroshiro128plus.NewSource(rand.Int64())}} {
 		b.Run("rng="+rng.Name, func(b *testing.B) {
 			distribution := distributionFn(rng.Src)
 			benchmarkDistribution(b, distribution)
