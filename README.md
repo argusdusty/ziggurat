@@ -30,7 +30,7 @@ import (
 func main() {
 	src := xoroshiro128plus.NewSource(1)
 	distribution := distuv.UnitNormal // Swap this for most gonum univariate distributions
-	rng := ziggurat.ToSymmetricZiggurat(distribution, src) // The normal distribution is symmetric, so we can use the more efficient symmetric ziggurat
+	rng := ziggurat.ToZiggurat (Symmetric)(distribution, src) // The normal distribution is symmetric, so we can use the more efficient symmetric ziggurat
 	randomNormalValue := rng.Rand()
 }
 ```
@@ -47,37 +47,38 @@ pkg: github.com/argusdusty/ziggurat
 cpu: AMD Ryzen 9 5900X 12-Core Processor
 ```
 
-| Distribution             | Algorithm         | RNG           | Time       |
-|:-------------------------|:------------------|:--------------|:-----------|
-| Beta (alpha=4, beta=4)   | Ziggurat          | Default       | 21.84ns/op |
-| Beta (alpha=4, beta=4)   | Ziggurat          | xoroshiro128+ | 11.45ns/op |
-| Beta (alpha=4, beta=4)   | SymmetricZiggurat | Default       | 9.347ns/op |
-| Beta (alpha=4, beta=4)   | SymmetricZiggurat | xoroshiro128+ | 4.557ns/op |
-| Beta (alpha=4, beta=4)   | Gonum             | Default       | 48.69ns/op |
-| Beta (alpha=4, beta=4)   | Gonum             | xoroshiro128+ | 38.19ns/op |
-| Gamma (alpha=1)          | Ziggurat          | Default       | 8.775ns/op |
-| Gamma (alpha=1)          | Ziggurat          | xoroshiro128+ | 3.927ns/op |
-| Gamma (alpha=1)          | Gonum             | Default       | 11.64ns/op |
-| Gamma (alpha=1)          | Gonum             | xoroshiro128+ | 8.195ns/op |
-| Half-Normal              | Ziggurat          | Default       | 8.431ns/op |
-| Half-Normal              | Ziggurat          | xoroshiro128+ | 3.560ns/op |
-| Normal                   | Ziggurat          | Default       | 21.22ns/op |
-| Normal                   | Ziggurat          | xoroshiro128+ | 10.58ns/op |
-| Normal                   | SymmetricZiggurat | Default       | 8.611ns/op |
-| Normal                   | SymmetricZiggurat | xoroshiro128+ | 3.868ns/op |
-| Normal                   | Gonum             | Default       | 11.24ns/op |
-| Normal                   | Gonum             | xoroshiro128+ | 6.978ns/op |
-| Normal                   | Stdlib            | Default       | 8.816ns/op |
-| Normal                   | Stdlib            | xoroshiro128+ | 3.975ns/op |
-| Student's t (dof=5)      | Ziggurat          | xoroshiro128+ | 11.80ns/op |
-| Student's t (dof=5)      | SymmetricZiggurat | Default       | 9.703ns/op |
-| Student's t (dof=5)      | SymmetricZiggurat | xoroshiro128+ | 5.016ns/op |
-| Student's t (dof=5)      | Gonum             | Default       | 42.80ns/op |
-| Student's t (dof=5)      | Gonum             | xoroshiro128+ | 35.68ns/op |
-| Triangle (a=0, b=1, c=0) | Ziggurat          | Default       | 8.416ns/op |
-| Triangle (a=0, b=1, c=0) | Ziggurat          | xoroshiro128+ | 3.572ns/op |
-| Triangle (a=0, b=1, c=0) | Gonum             | Default       | 17.85ns/op |
-| Triangle (a=0, b=1, c=0) | Gonum             | xoroshiro128+ | 15.66ns/op |
+| Distribution             | Algorithm            | RNG           | Time       |
+|:-------------------------|:---------------------|:--------------|:-----------|
+| Beta (alpha=4, beta=4)   | Ziggurat             | Default       | 21.84ns/op |
+| Beta (alpha=4, beta=4)   | Ziggurat             | xoroshiro128+ | 11.45ns/op |
+| Beta (alpha=4, beta=4)   | Ziggurat (Symmetric) | Default       | 9.347ns/op |
+| Beta (alpha=4, beta=4)   | Ziggurat (Symmetric) | xoroshiro128+ | 4.557ns/op |
+| Beta (alpha=4, beta=4)   | Gonum                | Default       | 48.69ns/op |
+| Beta (alpha=4, beta=4)   | Gonum                | xoroshiro128+ | 38.19ns/op |
+| Gamma (alpha=1)          | Ziggurat             | Default       | 8.775ns/op |
+| Gamma (alpha=1)          | Ziggurat             | xoroshiro128+ | 3.927ns/op |
+| Gamma (alpha=1)          | Gonum                | Default       | 11.64ns/op |
+| Gamma (alpha=1)          | Gonum                | xoroshiro128+ | 8.195ns/op |
+| Half-Normal              | Ziggurat             | Default       | 8.431ns/op |
+| Half-Normal              | Ziggurat             | xoroshiro128+ | 3.560ns/op |
+| Normal                   | Ziggurat             | Default       | 21.22ns/op |
+| Normal                   | Ziggurat             | xoroshiro128+ | 10.58ns/op |
+| Normal                   | Ziggurat (Symmetric) | Default       | 8.611ns/op |
+| Normal                   | Ziggurat (Symmetric) | xoroshiro128+ | 3.868ns/op |
+| Normal                   | Gonum                | Default       | 11.24ns/op |
+| Normal                   | Gonum                | xoroshiro128+ | 6.978ns/op |
+| Normal                   | Stdlib               | Default       | 8.816ns/op |
+| Normal                   | Stdlib               | xoroshiro128+ | 3.975ns/op |
+| Student's t (dof=5)      | Ziggurat             | Default       | 22.55ns/op |
+| Student's t (dof=5)      | Ziggurat             | xoroshiro128+ | 11.80ns/op |
+| Student's t (dof=5)      | Ziggurat (Symmetric) | Default       | 9.703ns/op |
+| Student's t (dof=5)      | Ziggurat (Symmetric) | xoroshiro128+ | 5.016ns/op |
+| Student's t (dof=5)      | Gonum                | Default       | 42.80ns/op |
+| Student's t (dof=5)      | Gonum                | xoroshiro128+ | 35.68ns/op |
+| Triangle (a=0, b=1, c=0) | Ziggurat             | Default       | 8.416ns/op |
+| Triangle (a=0, b=1, c=0) | Ziggurat             | xoroshiro128+ | 3.572ns/op |
+| Triangle (a=0, b=1, c=0) | Gonum                | Default       | 17.85ns/op |
+| Triangle (a=0, b=1, c=0) | Gonum                | xoroshiro128+ | 15.66ns/op |
 
 [godoc-badge]:       https://godoc.org/github.com/argusdusty/ziggurat?status.svg
 [godoc]:             https://godoc.org/github.com/argusdusty/ziggurat
