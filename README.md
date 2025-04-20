@@ -47,30 +47,34 @@ pkg: github.com/argusdusty/ziggurat
 cpu: AMD Ryzen 9 5900X 12-Core Processor
 ```
 
-| Distribution        | Algorithm            | RNG     | Iterations | Time        |
-|:--------------------|:---------------------|:--------|:-----------|:------------|
-| Gamma (alpha=1)     | Ziggurat             | Default | 686436024  | 8.583 ns/op |
-| Gamma (alpha=1)     | Ziggurat             | Fast    | 1000000000 | 3.638 ns/op |
-| Gamma (alpha=1)     | Gonum                | Default | 512718362  | 11.88 ns/op |
-| Gamma (alpha=1)     | Gonum                | Fast    | 722268586  | 8.259 ns/op |
-| Half-Normal         | Ziggurat             | Default | 740980780  | 8.208 ns/op |
-| Half-Normal         | Ziggurat             | Fast    | 1000000000 | 3.325 ns/op |
-| Normal              | Ziggurat             | Default | 290772226  | 20.09 ns/op |
-| Normal              | Ziggurat             | Fast    | 581838266  | 10.39 ns/op |
-| Normal              | Ziggurat (Symmetric) | Default | 696211483  | 8.665 ns/op |
-| Normal              | Ziggurat (Symmetric) | Fast    | 1000000000 | 3.927 ns/op |
-| Normal              | Gonum                | Default | 612776575  | 9.908 ns/op |
-| Normal              | Gonum                | Fast    | 946064395  | 6.381 ns/op |
-| Normal              | Stdlib               | Default | 798303338  | 7.573 ns/op |
-| Normal              | Stdlib               | Fast    | 1000000000 | 3.688 ns/op |
-| Student's t (dof=5) | Ziggurat             | Default | 272666368  | 22.60 ns/op |
-| Student's t (dof=5) | Ziggurat             | Fast    | 509183419  | 11.63 ns/op |
-| Student's t (dof=5) | Ziggurat (Symmetric) | Default | 622864159  | 9.705 ns/op |
-| Student's t (dof=5) | Ziggurat (Symmetric) | Fast    | 1000000000 | 5.162 ns/op |
-| Student's t (dof=5) | Gonum                | Default | 139996405  | 42.52 ns/op |
-| Student's t (dof=5) | Gonum                | Fast    | 166135466  | 36.09 ns/op |
-
-(Note: Fast RNG means xorshift64star)
+| Distribution          | Algorithm            | RNG         | Time        |
+|:----------------------|:---------------------|:------------|:------------|
+| Beta (alpha=4,beta=4) | Ziggurat             | Default     | 23.45 ns/op |
+| Beta (alpha=4,beta=4) | Ziggurat             | xorshift64* | 11.88 ns/op |
+| Beta (alpha=4,beta=4) | Ziggurat (Symmetric) | Default     | 9.548 ns/op |
+| Beta (alpha=4,beta=4) | Ziggurat (Symmetric) | xorshift64* | 4.755 ns/op |
+| Beta (alpha=4,beta=4) | Gonum                | Default     | 49.62 ns/op |
+| Beta (alpha=4,beta=4) | Gonum                | xorshift64* | 38.52 ns/op |
+| Gamma (alpha=1)       | Ziggurat             | Default     | 8.583 ns/op |
+| Gamma (alpha=1)       | Ziggurat             | xorshift64* | 3.638 ns/op |
+| Gamma (alpha=1)       | Gonum                | Default     | 11.88 ns/op |
+| Gamma (alpha=1)       | Gonum                | xorshift64* | 8.259 ns/op |
+| Half-Normal           | Ziggurat             | Default     | 8.208 ns/op |
+| Half-Normal           | Ziggurat             | xorshift64* | 3.325 ns/op |
+| Normal                | Ziggurat             | Default     | 20.09 ns/op |
+| Normal                | Ziggurat             | xorshift64* | 10.39 ns/op |
+| Normal                | Ziggurat (Symmetric) | Default     | 8.665 ns/op |
+| Normal                | Ziggurat (Symmetric) | xorshift64* | 3.927 ns/op |
+| Normal                | Gonum                | Default     | 9.908 ns/op |
+| Normal                | Gonum                | xorshift64* | 6.381 ns/op |
+| Normal                | Stdlib               | Default     | 7.573 ns/op |
+| Normal                | Stdlib               | xorshift64* | 3.688 ns/op |
+| Student's t (dof=5)   | Ziggurat             | Default     | 22.60 ns/op |
+| Student's t (dof=5)   | Ziggurat             | xorshift64* | 11.63 ns/op |
+| Student's t (dof=5)   | Ziggurat (Symmetric) | Default     | 9.705 ns/op |
+| Student's t (dof=5)   | Ziggurat (Symmetric) | xorshift64* | 5.162 ns/op |
+| Student's t (dof=5)   | Gonum                | Default     | 42.52 ns/op |
+| Student's t (dof=5)   | Gonum                | xorshift64* | 36.09 ns/op |
 
 [godoc-badge]:       https://godoc.org/github.com/argusdusty/ziggurat?status.svg
 [godoc]:             https://godoc.org/github.com/argusdusty/ziggurat
